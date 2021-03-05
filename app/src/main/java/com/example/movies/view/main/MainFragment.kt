@@ -1,16 +1,15 @@
-package com.example.movies.view
+package com.example.movies.view.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.MainContentBinding
-import com.example.movies.model.CardSource
+import com.example.movies.model.CardData
 import com.example.movies.viewModel.AppState
 import com.example.movies.viewModel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -41,17 +40,15 @@ class MainFragment : Fragment() {
         viewModel.getMovieDataFromLocalSource()
     }
 
-    private fun initRecyclerView(recyclerView: RecyclerView, data: CardSource) {
+    private fun initRecyclerView(recyclerView: RecyclerView, data: List<CardData>) {
         recyclerView.setHasFixedSize(true)
+
         val layoutManager = LinearLayoutManager(context)
+        val adapter = MovieAdapter(activity?.supportFragmentManager)
+
         recyclerView.layoutManager = layoutManager
-        val adapter = MovieAdapter(data)
         recyclerView.adapter = adapter
-        adapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, position: Int) {
-                Toast.makeText(context, "data$position", Toast.LENGTH_LONG).show()
-            }
-        })
+        adapter.setMovieData(data)
     }
 
     private fun renderData(appState: AppState) {
