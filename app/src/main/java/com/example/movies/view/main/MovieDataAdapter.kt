@@ -12,6 +12,7 @@ import com.example.movies.model.MovieData
 class MovieDataAdapter : RecyclerView.Adapter<MovieDataAdapter.ViewHolder>() {
 
     private var movieData: List<MovieData> = listOf()
+    private val cardsLimit = 10
     private lateinit var itemClickListener: OnItemClickListener
 
     interface OnItemClickListener {
@@ -28,17 +29,21 @@ class MovieDataAdapter : RecyclerView.Adapter<MovieDataAdapter.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v: View = LayoutInflater.from(parent.context).inflate(
-            R.layout.fragment_movie, parent, false
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.fragment_movie, parent, false
+            )
         )
-        return ViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
         holder.bind(movieData[position], itemClickListener)
-    }
 
-    override fun getItemCount() = movieData.size
+    override fun getItemCount() = if (movieData.size >= cardsLimit) {
+        cardsLimit
+    } else {
+        movieData.size
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var movie: TextView = itemView.findViewById(R.id.textView_movieTitle)

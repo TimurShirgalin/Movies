@@ -11,7 +11,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_movie_categories"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin" />
 
     <FrameLayout
         android:id="@+id/loadingLayout"
@@ -39,6 +40,7 @@
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
         </LinearLayout>
     </FrameLayout>
 </FrameLayout>

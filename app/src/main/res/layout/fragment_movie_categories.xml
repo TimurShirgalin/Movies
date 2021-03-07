@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin"
-    android:layout_marginBottom="@dimen/margin">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,8 +12,10 @@
         <TextView
             android:id="@+id/textView_movieCategory"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin"
+            android:fontFamily="@font/capture_smallz"
             android:textColor="@color/black"
             android:textSize="@dimen/textSize_20" />
 
@@ -26,5 +26,4 @@
             android:orientation="horizontal" />
 
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

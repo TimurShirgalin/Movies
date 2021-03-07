@@ -23,15 +23,15 @@ class MovieAdapter(private val manager: FragmentManager?) :
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
-        val v: View = LayoutInflater.from(viewGroup.context).inflate(
-            R.layout.fragment_movie_categories, viewGroup, false
+        return ViewHolder(
+            LayoutInflater.from(viewGroup.context).inflate(
+                R.layout.fragment_movie_categories, viewGroup, false
+            )
         )
-        return ViewHolder(v)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) =
         viewHolder.bind(movieCategories[i])
-    }
 
     override fun getItemCount() = movieCategories.size
 
@@ -44,27 +44,29 @@ class MovieAdapter(private val manager: FragmentManager?) :
         }
 
         private fun setMovieDataRecycler(cardData: CardData) {
-            val movieDataRecycler: RecyclerView = itemView.findViewById(R.id.recycler_movieData)
-            val movieDataLayoutManager =
-                LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            val movieDataAdapter = MovieDataAdapter()
-
-            movieDataRecycler.layoutManager = movieDataLayoutManager
-            movieDataRecycler.adapter = movieDataAdapter
-            movieDataAdapter.setMovieDataNew(cardData.movieData)
-
-            movieDataAdapter.setOnItemClickListener(object : MovieDataAdapter.OnItemClickListener {
-                override fun onItemClick(view: View?, position: Int) {
-                    if (manager != null) {
-                        val bundle = Bundle()
-                        bundle.putParcelable(MovieDetails.KEY, cardData.movieData[position])
-                        manager.beginTransaction()
-                            .add(R.id.container, MovieDetails.newInstance(bundle))
-                            .addToBackStack(null)
-                            .commit()
+            MovieDataAdapter().let {
+                it.setMovieDataNew(cardData.movieData)
+                it.setOnItemClickListener(object : MovieDataAdapter.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        manager?.beginTransaction()?.apply {
+                            add(
+                                R.id.container, MovieDetails.newInstance(Bundle().apply {
+                                    putParcelable(MovieDetails.KEY, cardData.movieData[position])
+                                })
+                            )
+                            addToBackStack(null)
+                            commit()
+                        }
                     }
+                })
+                val movieDataRecycler: RecyclerView = itemView.findViewById(R.id.recycler_movieData)
+                movieDataRecycler.apply {
+                    setHasFixedSize(true)
+                    layoutManager =
+                        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                    this.adapter = it
                 }
-            })
+            }
         }
     }
 }

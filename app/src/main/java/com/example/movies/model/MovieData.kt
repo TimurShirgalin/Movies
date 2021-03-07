@@ -2,10 +2,15 @@ package com.example.movies.model
 
 import android.os.Parcelable
 import com.example.movies.R
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MovieData(val titles: String, val category: String, val description: String, val image: Int) : Parcelable
+data class MovieData(
+        val titles: String,
+        val category: String,
+        val description: String,
+        val image: Int
+) : Parcelable
 
 fun getMovieData(): List<MovieData> {
     return listOf(
