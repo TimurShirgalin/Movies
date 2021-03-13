@@ -9,15 +9,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
-import com.example.movies.model.CardData
+import com.example.movies.model.Categories
 import com.example.movies.view.details.MovieDetails
 
 class MovieAdapter(private val manager: FragmentManager?) :
     RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
 
-    private var movieCategories: List<CardData> = listOf()
+    private var movieCategories: List<Categories> = listOf()
 
-    fun setMovieData(data: List<CardData>) {
+    fun setMovieData(data: List<Categories>) {
         movieCategories = data
         notifyDataSetChanged()
     }
@@ -38,12 +38,12 @@ class MovieAdapter(private val manager: FragmentManager?) :
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var movieCategory: TextView = itemView.findViewById(R.id.textView_movieCategory)
 
-        fun bind(cardData: CardData) {
-            movieCategory.text = cardData.category
+        fun bind(cardData: Categories) {
+            movieCategory.text = cardData.categoryName
             setMovieDataRecycler(cardData)
         }
 
-        private fun setMovieDataRecycler(cardData: CardData) {
+        private fun setMovieDataRecycler(cardData: Categories) {
             val movieDataRecycler: RecyclerView = itemView.findViewById(R.id.recycler_movieData)
             val movieDataLayoutManager =
                 LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -51,15 +51,15 @@ class MovieAdapter(private val manager: FragmentManager?) :
 
             movieDataRecycler.layoutManager = movieDataLayoutManager
             movieDataRecycler.adapter = movieDataAdapter
-            movieDataAdapter.setMovieDataNew(cardData.movieData)
+            movieDataAdapter.setMovieDataNew(cardData.movieList)
 
             movieDataAdapter.setOnItemClickListener(object : MovieDataAdapter.OnItemClickListener {
                 override fun onItemClick(view: View?, position: Int) {
                     if (manager != null) {
                         val bundle = Bundle()
-                        bundle.putParcelable(MovieDetails.KEY, cardData.movieData[position])
+                        bundle.putParcelable(MovieDetails.KEY, cardData.movieList[position])
                         manager.beginTransaction()
-                            .add(R.id.container, MovieDetails.newInstance(bundle))
+                            .replace(R.id.container, MovieDetails.newInstance(bundle))
                             .addToBackStack(null)
                             .commit()
                     }

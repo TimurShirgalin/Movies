@@ -1,15 +1,17 @@
 package com.example.movies.view.main
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.MainContentBinding
-import com.example.movies.model.CardData
+import com.example.movies.model.Categories
 import com.example.movies.viewModel.AppState
 import com.example.movies.viewModel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -33,24 +35,24 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
-        viewModel.getMovieDataFromLocalSource()
     }
 
-    private fun initRecyclerView(recyclerView: RecyclerView, data: List<CardData>) {
+    private fun initRecyclerView(recyclerView: RecyclerView, data: List<Categories>) {
         recyclerView.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(context)
         val adapter = MovieAdapter(activity?.supportFragmentManager)
-
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         adapter.setMovieData(data)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
@@ -62,7 +64,7 @@ class MainFragment : Fragment() {
                 binding.loadingLayout.visibility = View.GONE
                 Snackbar
                     .make(binding.recyclerMovieCategories, "Error", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Reload") { viewModel.getMovieDataFromLocalSource() }
+                    .setAction("Reload") { viewModel }
                     .show()
             }
             is AppState.Loading -> {

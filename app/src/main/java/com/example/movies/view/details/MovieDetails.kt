@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.movies.R
+import com.bumptech.glide.Glide
 import com.example.movies.databinding.FragmentMovieDetailsBinding
-import com.example.movies.model.MovieData
-import kotlinx.android.synthetic.main.main_activity.*
+import com.example.movies.model.Movies
 
 class MovieDetails : Fragment() {
 
@@ -27,15 +26,18 @@ class MovieDetails : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity?)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        activity?.toolbar?.setNavigationIcon(R.drawable.back)
 
-        val movieData = arguments?.getParcelable<MovieData>(KEY)
+        val movieData = arguments?.getParcelable<Movies>(KEY)
 
         if (movieData != null) {
-            binding.detailsImage.setImageResource(movieData.image)
-            binding.detailsTitle.text = movieData.titles
-            binding.detailsCategory.text = movieData.category
-            binding.detailsDescription.text = movieData.description
+            Glide.with(context)
+                .asBitmap()
+                .load("https://image.tmdb.org/t/p/w185_and_h278_bestv2${movieData.poster_path}")
+                .into(binding.detailsImage)
+//            binding.detailsImage.setImageResource(movieData.image)
+            binding.detailsTitle.text = "Название:\n${movieData.title}"
+            binding.detailsCategory.text = "Описание:\n${movieData.overview}"
+            binding.detailsDescription.text = "Рейтинг:\n${movieData.vote_average.toString()}"
         }
     }
 
@@ -52,6 +54,7 @@ class MovieDetails : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        activity?.supportFragmentManager?.popBackStack()
         (activity as AppCompatActivity?)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 }
