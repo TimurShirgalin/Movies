@@ -1,15 +1,23 @@
 package com.example.movies.view.main
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movies.ServiceData
 import com.example.movies.databinding.MainContentBinding
 import com.example.movies.model.Categories
 import com.example.movies.viewModel.AppState
@@ -20,12 +28,30 @@ class MainFragment : Fragment() {
 
     private var _binding: MainContentBinding? = null
     private val binding get() = _binding!!
-
-    companion object {
-        fun newInstance() = MainFragment()
-    }
+    private val connection = Connect { Toast.makeText(context, "$it", Toast.LENGTH_LONG).show() }
 
     private lateinit var viewModel: MainViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            (context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).registerDefaultNetworkCallback(
+                object :
+                    ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network) = makeToast(true)
+                    override fun onLost(network: Network) = makeToast(false)
+                })
+        } else {
+            context?.let {
+                LocalBroadcastManager.getInstance(it)
+                    .registerReceiver(connection,
+                        IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            }
+        }
+    }
+
+    private fun makeToast(status: Boolean) =
+        Toast.makeText(context, "$status", Toast.LENGTH_LONG).show()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +90,7 @@ class MainFragment : Fragment() {
                 binding.loadingLayout.visibility = View.GONE
                 Snackbar
                     .make(binding.recyclerMovieCategories, "Error", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Reload") { viewModel }
+                    .setAction("Reload") { viewModel.getMoviesData() }
                     .show()
             }
             is AppState.Loading -> {
@@ -73,8 +99,15 @@ class MainFragment : Fragment() {
         }
     }
 
+    companion object {
+        fun newInstance() = MainFragment()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(connection)
+        }
         _binding = null
     }
 }

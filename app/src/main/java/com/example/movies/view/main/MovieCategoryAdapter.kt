@@ -59,7 +59,7 @@ class MovieAdapter(private val manager: FragmentManager?) :
                         val bundle = Bundle()
                         bundle.putParcelable(MovieDetails.KEY, cardData.movieList[position])
                         manager.beginTransaction()
-                            .replace(R.id.container, MovieDetails.newInstance(bundle))
+                            .add(R.id.container, MovieDetails.newInstance(bundle))
                             .addToBackStack(null)
                             .commit()
                     }

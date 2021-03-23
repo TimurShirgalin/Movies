@@ -36,3 +36,12 @@ data class Categories(
     val categoryName: String?,
     val movieList: List<Movies>,
 ) : Parcelable
+
+@Parcelize
+data class MoviesWithoutGenres(
+    val id: Int?,
+    val title: String?,
+    val overview: String?,
+    val poster_path: String?,
+    val vote_average: Number?,
+) : Parcelable
