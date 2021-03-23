@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.MainContentBinding
+import com.example.movies.hide
 import com.example.movies.model.CardData
+import com.example.movies.show
 import com.example.movies.viewModel.AppState
 import com.example.movies.viewModel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -35,38 +37,37 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
-        viewModel.getMovieDataFromLocalSource()
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java).apply {
+            getLiveData().observe(viewLifecycleOwner, { renderData(it) })
+            getMovieDataFromLocalSource()
+        }
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView, data: List<CardData>) {
-        recyclerView.setHasFixedSize(true)
-
-        val layoutManager = LinearLayoutManager(context)
-        val adapter = MovieAdapter(activity?.supportFragmentManager)
-
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-        adapter.setMovieData(data)
+        val adapter = MovieAdapter(activity?.supportFragmentManager).apply { setMovieData(data) }
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            this.adapter = adapter
+        }
     }
 
     private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
-                binding.loadingLayout.visibility = View.GONE
+                binding.loadingLayout.hide()
                 val recyclerView: RecyclerView = binding.recyclerMovieCategories
                 initRecyclerView(recyclerView, appState.data)
             }
             is AppState.Error -> {
-                binding.loadingLayout.visibility = View.GONE
+                binding.loadingLayout.hide()
                 Snackbar
                     .make(binding.recyclerMovieCategories, "Error", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Reload") { viewModel.getMovieDataFromLocalSource() }
                     .show()
             }
             is AppState.Loading -> {
-                binding.loadingLayout.visibility = View.VISIBLE
+                binding.loadingLayout.show()
             }
         }
     }

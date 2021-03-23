@@ -14,7 +14,7 @@ class MainViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
     private fun getDataFromLocalSource() {
         liveDataToObserve.value = AppState.Loading
         Thread {
-            Thread.sleep(5000)
+            Thread.sleep(1000)
             liveDataToObserve.postValue(AppState.Success(CardSourceImpl().getDataFromLocalSource()))
         }.start()
     }
