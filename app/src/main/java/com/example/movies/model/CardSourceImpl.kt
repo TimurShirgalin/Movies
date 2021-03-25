@@ -8,8 +8,9 @@ import com.example.movies.viewModel.AppState
 class CardSourceImpl : CardSource {
 
     @RequiresApi(Build.VERSION_CODES.N)
-    override fun getDataFromOutSource(liveDataToObserve: MutableLiveData<AppState>): List<Categories> {
-        return loadData(liveDataToObserve)
+    override fun getDataFromOutSource(liveDataToObserve: MutableLiveData<AppState>)/*: List<Categories>*/ {
+        NewLoadMovieData().getGenresData("ru-RU", liveDataToObserve)
+//        return loadData(liveDataToObserve)
     }
 
 }

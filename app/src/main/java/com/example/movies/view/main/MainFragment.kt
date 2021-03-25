@@ -1,7 +1,6 @@
 package com.example.movies.view.main
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
@@ -17,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.movies.ServiceData
 import com.example.movies.databinding.MainContentBinding
 import com.example.movies.model.Categories
 import com.example.movies.viewModel.AppState

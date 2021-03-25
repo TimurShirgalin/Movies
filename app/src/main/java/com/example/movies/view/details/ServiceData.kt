@@ -27,7 +27,7 @@ class ServiceData : IntentService(null) {
         }
 
         val moviesURL =
-            "https://api.themoviedb.org/3/movie/${movieId}?api_key=${YOUR_API_KEY}&language=ru-RU"
+            "https://api.tmdb.org/3/movie/${movieId}?api_key=${YOUR_API_KEY}&language=ru-RU"
         try {
             var urlConnection: HttpsURLConnection? = null
             try {
